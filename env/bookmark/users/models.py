@@ -19,5 +19,8 @@ class Profile(models.Model):
         blank=True
     )
 
+    class Meta:
+        db_table = 'account_profile'
+
     def __str__(self):
         return f'Profile for user {self.user.username}'

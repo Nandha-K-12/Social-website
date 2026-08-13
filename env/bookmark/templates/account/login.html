@@ -1,0 +1,44 @@
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+
+    <h1>Sign In</h1>
+
+    <p>
+        Login with your account
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Sign In
+        </button>
+    </form>
+
+    <hr>
+
+    <p>Or</p>
+
+    <a href="{% provider_login_url 'google' %}">
+        Continue with Google
+    </a>
+
+    <p>
+        Don't have an account?
+        <a href="{% url 'account_signup' %}">
+            Sign Up
+        </a>
+    </p>
+
+</body>
+</html>

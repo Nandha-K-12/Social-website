@@ -29,8 +29,12 @@ urlpatterns = [
     ),
 
     path(
-        'account/',
-        include('account.urls')
+        'users/',
+        include('users.urls')
+    ),
+     path(
+        'accounts/',
+        include('allauth.urls')
     ),
 
 ]
