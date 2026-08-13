@@ -7,6 +7,7 @@ from .forms import (
     ProfileEditForm,
 )
 from .models import Profile
+from django.contrib import messages
 class UserLoginView(LoginView):
     template_name = 'authentication/login.html'
 
@@ -16,7 +17,6 @@ def dashboard(request):
         request,
         'dashboard.html'
     )
-    
 @login_required
 def edit(request):
 
@@ -37,6 +37,18 @@ def edit(request):
 
             user_form.save()
             profile_form.save()
+
+            messages.success(
+                request,
+                'Profile updated successfully'
+            )
+
+        else:
+
+            messages.error(
+                request,
+                'Error updating your profile'
+            )
 
     else:
 

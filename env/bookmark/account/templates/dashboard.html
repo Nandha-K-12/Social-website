@@ -7,18 +7,16 @@
 {% block content %}
 
     <h1>Dashboard</h1>
-
-    <p>
-        Welcome, {{ request.user.username }}!
-    </p>
-
-    <p>
-        You are successfully logged in.
-    </p>
-     <p>
-        <a href="{% url 'account:password_change' %}">
-            Change your password
-        </a>
-    </p>
+<p>
+    Welcome to your dashboard.
+    You can
+    <a href="{% url 'account:edit' %}">
+        edit your profile
+    </a>
+    or
+    <a href="{% url 'account:password_change' %}">
+        change your password
+    </a>.
+</p>
 
 {% endblock %}
