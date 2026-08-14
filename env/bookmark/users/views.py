@@ -17,7 +17,8 @@ class UserLoginView(LoginView):
 def dashboard(request):
     return render(
         request,
-        'dashboard.html'
+        'dashboard.html',
+        {'section': 'dashboard'}
     )
 @login_required
 def edit(request):
@@ -66,6 +67,7 @@ def edit(request):
         request,
         'account/edit.html',
         {
+            'section': 'dashboard',
             'user_form': user_form,
             'profile_form': profile_form,
         }

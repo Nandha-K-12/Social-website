@@ -1,18 +1,49 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard | Bookmarks{% endblock %}
 
 {% block content %}
-    <h1>Dashboard</h1>
-    {% with total_images_created=request.user.images_created.count %}
-        <p>Welcome to your dashboard. You have bookmarked {{ total_images_created }} image{{ total_images_created|pluralize }}.</p>
-    {% endwith %}
+    <div class="dashboard-hero">
+        <h1>Welcome back, {{ request.user.first_name|default:request.user.username }}! 👋</h1>
+        {% with total_images_created=request.user.images_created.count %}
+            <p>You have bookmarked <strong>{{ total_images_created }}</strong> image{{ total_images_created|pluralize }}. Discover, save, and share images from anywhere on the web.</p>
+        {% endwith %}
+    </div>
 
-    <p>Drag the following button to your bookmarks toolbar to bookmark images from other websites:
-        <a href="javascript:{% include 'bookmarklet_launcher.js' %}" class="button" style="padding: 6px 12px; background: #28a745; color: white; border-radius: 4px; text-decoration: none;">Bookmark it</a>
-    </p>
+    <div class="dashboard-grid">
+        <!-- Bookmarklet Installation Card -->
+        <div class="dashboard-card bookmarklet-box">
+            <h2>📌 Web Bookmarklet</h2>
+            <p>Drag the button below directly into your <strong>Browser Bookmarks Toolbar</strong>. When browsing any website, click it to instantly bookmark images!</p>
+            <div style="margin: 1.5rem 0;">
+                <a href="javascript:{% include 'bookmarklet_launcher.js' %}" class="bookmarklet-btn">
+                    <span>✨</span> Bookmark it
+                </a>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0;">
+                💡 <em>Tip: If your bookmarks bar is hidden, press <strong>Ctrl+Shift+B</strong> (Windows) or <strong>Cmd+Shift+B</strong> (Mac) to show it.</em>
+            </p>
+        </div>
 
-    <p>
-        You can also <a href="{% url 'users:edit' %}">edit your profile</a> or <a href="{% url 'users:password_change' %}">change your password</a>.
-    </p>
+        <!-- Quick Actions Card -->
+        <div class="dashboard-card">
+            <h2>⚙️ Account & Settings</h2>
+            <p>Manage your profile info, profile photo, and password security.</p>
+            
+            <div class="action-links-list">
+                <a href="{% url 'users:edit' %}" class="action-link-card">
+                    <span>👤 Edit Profile & Photo</span>
+                    <span>&rarr;</span>
+                </a>
+                <a href="{% url 'users:password_change' %}" class="action-link-card">
+                    <span>🔒 Change Password</span>
+                    <span>&rarr;</span>
+                </a>
+                <a href="{% url 'images:list' %}" class="action-link-card">
+                    <span>🖼️ Explore All Images</span>
+                    <span>&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

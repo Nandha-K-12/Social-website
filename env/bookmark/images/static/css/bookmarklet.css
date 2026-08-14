@@ -1,55 +1,68 @@
 #bookmarklet {
-    background: #fff;
-    border: 3px solid #12c567;
+    background: #ffffff;
+    border: 2px solid #4f46e5;
+    border-radius: 16px;
     position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 320px;
-    padding: 10px 10px 20px 10px;
+    top: 24px;
+    right: 24px;
+    width: 340px;
+    padding: 16px 18px 20px 18px;
     z-index: 999999999999;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    font-family: Arial, sans-serif;
-    color: #333;
+    box-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.25), 0 1px 3px rgba(0,0,0,0.1);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #0f172a;
     max-height: 80vh;
     overflow-y: auto;
+    animation: bookmarkletFadeIn 0.25s ease-out;
+}
+
+@keyframes bookmarkletFadeIn {
+    from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 #bookmarklet h1 {
-    font-size: 16px;
-    margin: 0 0 10px 0;
-    color: #12c567;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: #4f46e5;
+    letter-spacing: -0.02em;
 }
 
 #bookmarklet #close {
     position: absolute;
-    top: 5px;
-    right: 10px;
-    color: #aaa;
-    font-size: 20px;
+    top: 10px;
+    right: 14px;
+    color: #94a3b8;
+    font-size: 22px;
+    line-height: 1;
     text-decoration: none;
     font-weight: bold;
+    transition: color 0.15s ease;
 }
 
 #bookmarklet #close:hover {
-    color: #000;
+    color: #0f172a;
 }
 
 #bookmarklet .images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
 
 #bookmarklet .images img {
-    width: 90px;
+    width: 100%;
     height: 90px;
     object-fit: cover;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 #bookmarklet .images img:hover {
-    border-color: #12c567;
+    border-color: #4f46e5;
     transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(79, 70, 229, 0.2);
 }

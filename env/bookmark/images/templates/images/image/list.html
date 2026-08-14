@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Images Bookmarked | Bookmarks{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <div>
+            <h1>🖼️ Images Bookmarked</h1>
+            <p>Explore all the inspirational images saved by the community.</p>
+        </div>
+    </div>
+
+    <div id="image-list">
+        {% include "images/image/list_ajax.html" %}
+    </div>
+    
+    <div id="loading" style="display: none; text-align: center; padding: 2rem; color: var(--text-muted); font-weight: 600;">
+        ⏳ Loading more images...
+    </div>
+{% endblock %}
+
+{% block domready %}
+    var page = 1;
+    var empty_page = false;
+    var block_request = false;
+
+    $(window).scroll(function() {
+        var margin = $(document).height() - $(window).height() - 250;
+        if ($(window).scrollTop() > margin && empty_page == false && block_request == false) {
+            block_request = true;
+            page += 1;
+            $('#loading').show();
+            $.get('?page=' + page, function(data) {
+                $('#loading').hide();
+                if(data == '') {
+                    empty_page = true;
+                }
+                else {
+                    block_request = false;
+                    $('#image-list').append(data);
+                }
+            });
+        }
+    });
+{% endblock %}

@@ -1,6 +1,6 @@
 (function(){
   var jquery_version = '3.4.1';
-  var site_url = 'https://127.0.0.1:8000/';
+  var site_url = 'http://127.0.0.1:8000/';
   var static_url = site_url + 'static/';
   var min_width = 100;
   var min_height = 100;
@@ -25,12 +25,20 @@
     });
 
     // Find images and display them
-    jQuery.each(jQuery('img[src$="jpg"], img[src$="jpeg"], img[src$="png"]'), function(index, image) {
-      if (jQuery(image).width() >= min_width && jQuery(image).height() >= min_height) {
-        var image_url = jQuery(image).attr('src');
-        jQuery('#bookmarklet .images').append('<a href="#"><img src="'+ image_url +'" /></a>');
+    var found_images = 0;
+    jQuery('img').each(function(index, image) {
+      var src = image.src || jQuery(image).attr('src');
+      if (src && (image.naturalWidth >= min_width || jQuery(image).width() >= min_width) && (image.naturalHeight >= min_height || jQuery(image).height() >= min_height)) {
+        if (src.match(/\.(jpeg|jpg|png|webp)($|\?)/i) || src.startsWith('http')) {
+          found_images++;
+          jQuery('#bookmarklet .images').append('<a href="#"><img src="'+ src +'" /></a>');
+        }
       }
     });
+
+    if (found_images === 0) {
+      jQuery('#bookmarklet .images').append('<p style="color: #64748b; font-size: 13px; margin: 8px 0;">No images (≥100px) found on this page.</p>');
+    }
 
     // When an image is selected, open create URL
     jQuery('#bookmarklet .images a').click(function(e){

@@ -1,13 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}Bookmark an image{% endblock %}
+{% block title %}Bookmark an Image | Bookmarks{% endblock %}
 
 {% block content %}
-    <h1>Bookmark an image</h1>
-    <img src="{{ request.GET.url }}" class="image-preview" style="max-width: 300px;">
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <input type="submit" value="Bookmark it!">
-    </form>
+    <div class="page-header">
+        <div>
+            <h1>📌 Bookmark an Image</h1>
+            <p>Save and add details for your selected image.</p>
+        </div>
+    </div>
+
+    <div class="create-image-layout">
+        <!-- Left Column: Image Preview -->
+        <div class="image-preview-card">
+            <img src="{{ request.GET.url }}" class="image-preview" alt="Preview">
+        </div>
+
+        <!-- Right Column: Details Form -->
+        <div class="form-wrapper">
+            <form method="post">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <div class="form-actions">
+                    <input type="submit" value="✨ Save Image" class="button">
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

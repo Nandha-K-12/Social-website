@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'images.apps.ImagesConfig',
+    'easy_thumbnails',
 ]
 
 
@@ -192,6 +193,9 @@ USE_TZ = True
 # ============================================================
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 
 # ============================================================

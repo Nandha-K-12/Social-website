@@ -1,0 +1,26 @@
+{% load thumbnail %}
+
+{% for image in images %}
+    <div class="image">
+        <div class="image-thumb-wrapper">
+            <a href="{{ image.get_absolute_url }}">
+                {% thumbnail image.image 400x400 crop="100%" as im %}
+                <img src="{{ im.url }}" alt="{{ image.title }}">
+            </a>
+        </div>
+        <div class="info">
+            <a href="{{ image.get_absolute_url }}" class="title" title="{{ image.title }}">
+                {{ image.title }}
+            </a>
+            <span class="count">
+                ❤️ {{ image.users_like.count }}
+            </span>
+        </div>
+    </div>
+{% empty %}
+    <div class="empty-gallery">
+        <div class="empty-gallery-icon">🖼️</div>
+        <h3>No images bookmarked yet</h3>
+        <p>Use your <a href="{% url 'users:dashboard' %}">Bookmarklet</a> to start saving images from across the web!</p>
+    </div>
+{% endfor %}

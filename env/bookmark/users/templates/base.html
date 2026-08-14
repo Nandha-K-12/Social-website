@@ -1,92 +1,77 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bookmarks{% endblock %}</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>
-        {% block title %}
-            Bookmarks
-        {% endblock %}
-    </title>
-
+    <!-- Google Fonts & Stylesheet -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js"></script>
 <body>
-
     <header>
-
         <nav>
-
-            <a href="/">
-                Bookmarks
+            <a href="/" class="brand-logo">
+                <span class="brand-logo-icon">✨</span>
+                <span>Bookmarks</span>
             </a>
 
-            {% if request.user.is_authenticated %}
+            <ul class="nav-links">
+                {% if request.user.is_authenticated %}
+                    <li>
+                        <a href="{% url 'users:dashboard' %}" class="nav-link {% if section == 'dashboard' %}active{% endif %}">
+                            📊 Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'images:list' %}" class="nav-link {% if section == 'images' %}active{% endif %}">
+                            🖼️ Images
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
 
-                <a href="{% url 'users:dashboard' %}">
-                    Dashboard
-                </a>
-
-                <form
-                    method="post"
-                    action="{% url 'users:logout' %}"
-                    style="display: inline;">
-
-                    {% csrf_token %}
-
-                    <button type="submit">
-                        Logout
-                    </button>
-
-                </form>
-
-            {% else %}
-
-                <a href="{% url 'users:login' %}">
-                    Login
-                </a>
-
-            {% endif %}
-
+            <div class="nav-actions">
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-logout">
+                            Log out
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="button">
+                        Log in
+                    </a>
+                {% endif %}
+            </div>
         </nav>
-
     </header>
-
 
     <main>
         {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        <span>{{ message|safe }}</span>
+                        <span class="close" onclick="this.parentElement.remove();">&times;</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    <ul class="messages">
-
-        {% for message in messages %}
-
-            <li class="{{ message.tags }}">
-                {{ message|safe }}
-
-                <a href="#" class="close">
-                    x
-                </a>
-            </li>
-
-        {% endfor %}
-
-    </ul>
-
-{% endif %}
         {% block content %}
         {% endblock %}
-
     </main>
 
-</body>
-   <script>
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.min.js"></script>
+    <script>
         var csrftoken = Cookies.get('csrftoken');
         function csrfSafeMethod(method) {
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -104,4 +89,5 @@
             {% endblock %}
         });
     </script>
+</body>
 </html>

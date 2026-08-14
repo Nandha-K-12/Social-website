@@ -1,28 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}
-    Log-in
-{% endblock %}
+{% block title %}Log In | Bookmarks{% endblock %}
 
 {% block content %}
+    <div class="form-card">
+        <h1>🔐 Log In</h1>
+        <p class="form-card-subtitle">Welcome back! Please enter your details.</p>
 
-    <h1>Log-in</h1>
+        <form method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
 
-    <form method="post">
+            <div class="form-actions">
+                <input type="submit" value="Log In" class="button">
+            </div>
+        </form>
 
-        {{ form.as_p }}
-
-        {% csrf_token %}
-
-        <input
-            type="submit"
-            value="Log-in">
-
-    </form>
-    <p>
-        <a href="{% url 'users:password_reset' %}">
-            Forgot your password?
-        </a>
-    </p>
-
+        <div class="auth-footer">
+            <p>
+                <a href="{% url 'users:password_reset' %}">Forgot your password?</a>
+            </p>
+        </div>
+    </div>
 {% endblock %}
