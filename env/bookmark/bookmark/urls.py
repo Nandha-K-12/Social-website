@@ -36,6 +36,8 @@ urlpatterns = [
         'accounts/',
         include('allauth.urls')
     ),
+    path('images/', include('images.urls', namespace='images')),
+
 
 ]
 
