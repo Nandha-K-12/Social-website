@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block title %}People | Bookmarks{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>👥 Community Members</h1>
+        <p>Discover people, explore their bookmarks, and follow them.</p>
+    </div>
+
+    <div id="people-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        {% for user in users %}
+            <div class="user-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; box-shadow: var(--shadow-sm); transition: transform 0.2s ease;">
+                <a href="{% url 'users:user_detail' user.username %}">
+                    {% if user.profile.photo %}
+                        <img src="{% thumbnail user.profile.photo 120x120 crop="smart" %}" alt="{{ user.username }}" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem; border: 3px solid var(--primary-light);">
+                    {% else %}
+                        <div style="width: 90px; height: 90px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1rem;">
+                            👤
+                        </div>
+                    {% endif %}
+                </a>
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">
+                    <a href="{% url 'users:user_detail' user.username %}" style="color: var(--text-primary); font-weight: 700;">
+                        {{ user.get_full_name|default:user.username }}
+                    </a>
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">@{{ user.username }}</p>
+                <a href="{% url 'users:user_detail' user.username %}" class="button btn-secondary" style="font-size: 0.85rem; padding: 0.45rem 1rem; width: 100%;">
+                    View Profile
+                </a>
+            </div>
+        {% empty %}
+            <p>No other users found.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

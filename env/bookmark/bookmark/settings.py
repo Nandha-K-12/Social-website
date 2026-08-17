@@ -40,13 +40,13 @@ INSTALLED_APPS = [
 
     # Your app
     'users.apps.UsersConfig',
-
+    'images.apps.ImagesConfig',
+    'actions.apps.ActionsConfig',
     # django-allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'images.apps.ImagesConfig',
     'easy_thumbnails',
 ]
 
@@ -255,3 +255,11 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 # For now, keep the basic allauth configuration.
 # We will configure the social provider later.
+
+
+# ============================================================
+# REDIS CONFIGURATION
+# ============================================================
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0

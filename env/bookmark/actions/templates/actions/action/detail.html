@@ -1,0 +1,45 @@
+{% load thumbnail %}
+
+{% with user=action.user profile=action.user.profile target=action.target %}
+<div class="action-item" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color);">
+    <!-- User Avatar -->
+    <div class="action-avatar">
+        <a href="{% url 'users:user_detail' user.username %}">
+            {% if profile.photo %}
+                <img src="{% thumbnail profile.photo 80x80 crop="smart" %}" alt="{{ user.username }}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
+            {% else %}
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                    👤
+                </div>
+            {% endif %}
+        </a>
+    </div>
+
+    <!-- Action Info -->
+    <div class="action-info" style="flex: 1;">
+        <p style="margin: 0; font-size: 0.95rem;">
+            <a href="{% url 'users:user_detail' user.username %}" style="font-weight: 700; color: var(--text-primary);">
+                {{ user.first_name|default:user.username }}
+            </a>
+            <span style="color: var(--text-secondary);">{{ action.verb }}</span>
+            {% if target %}
+                {% with target_url=target.get_absolute_url %}
+                    <a href="{{ target_url }}" style="font-weight: 600;">{{ target }}</a>
+                {% endwith %}
+            {% endif %}
+        </p>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">
+            {{ action.created|timesince }} ago
+        </span>
+    </div>
+
+    <!-- Target Thumbnail (if target is an Image) -->
+    {% if target and target.image %}
+        <div class="action-target-thumb">
+            <a href="{{ target.get_absolute_url }}">
+                <img src="{% thumbnail target.image 80x80 crop="smart" %}" alt="{{ target.title }}" style="width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover;">
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endwith %}

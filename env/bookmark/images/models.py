@@ -1,10 +1,10 @@
 from django.db import models
-# pyrefly: ignore [missing-import]
 from django.conf import settings
-# pyrefly: ignore [missing-import]
 from django.utils.text import slugify
-# pyrefly: ignore [missing-import]
 from django.urls import reverse
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
+
 
 class Image(models.Model):      
     user = models.ForeignKey(
@@ -23,6 +23,15 @@ class Image(models.Model):
         related_name='images_liked',
         blank=True
     )
+    # Denormalized total likes count
+    total_likes = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['-created']),
+            models.Index(fields=['-total_likes']),
+        ]
+        ordering = ('-created',)
 
     def __str__(self):
         return self.title
@@ -34,3 +43,10 @@ class Image(models.Model):
 
     def get_absolute_url(self):
         return reverse('images:detail', args=[self.id, self.slug])
+
+
+# Signal receiver to update total_likes automatically
+@receiver(m2m_changed, sender=Image.users_like.through)
+def users_like_changed(sender, instance, **kwargs):
+    instance.total_likes = instance.users_like.count()
+    instance.save()

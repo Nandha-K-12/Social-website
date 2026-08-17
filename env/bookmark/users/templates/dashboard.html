@@ -46,4 +46,20 @@
             </div>
         </div>
     </div>
+
+     <!-- Activity Stream Card -->
+    <div class="dashboard-card" style="margin-top: 2rem;">
+        <h2>📢 What's Happening</h2>
+        <p>Latest activity from people you follow across the platform.</p>
+        
+        <div class="activity-feed" style="margin-top: 1rem; border-top: 1px solid var(--border-color);">
+            {% for action in actions %}
+                {% include "actions/action/detail.html" with action=action %}
+            {% empty %}
+                <p style="padding: 1.5rem 0; color: var(--text-muted); text-align: center;">
+                    No recent activity yet. Follow more people to see their updates here!
+                </p>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

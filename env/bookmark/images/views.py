@@ -1,23 +1,33 @@
+import redis
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ImageCreateForm
 from .models import Image
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from common.decorators import ajax_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse, JsonResponse
+from actions.utils import create_action
+
+# Connect to Redis
+r = redis.Redis(
+    host=settings.REDIS_HOST,
+    port=settings.REDIS_PORT,
+    db=settings.REDIS_DB
+)
+
 
 @login_required
 def image_create(request):
     if request.method == 'POST':
         form = ImageCreateForm(data=request.POST)
         if form.is_valid():
-            cd = form.cleaned_data
             new_item = form.save(commit=False)
             new_item.user = request.user
             new_item.save()
+            create_action(request.user, 'bookmarked image', new_item)
             messages.success(request, 'Image added successfully')
             return redirect(new_item.get_absolute_url())
     else:
@@ -28,13 +38,27 @@ def image_create(request):
         'images/image/create.html',
         {'section': 'images', 'form': form}
     )
+
+
 def image_detail(request, id, slug):
     image = get_object_or_404(Image, id=id, slug=slug)
+    # Increment total image views by 1 and increment score in sorted set
+    try:
+        total_views = r.incr(f'image:{image.id}:views')
+        r.zincrby('image_ranking', 1, image.id)
+    except (redis.ConnectionError, redis.TimeoutError):
+        total_views = 0
+
     return render(
         request,
         'images/image/detail.html',
-        {'section': 'images', 'image': image}
+        {
+            'section': 'images',
+            'image': image,
+            'total_views': total_views
+        }
     )
+
 
 @ajax_required
 @login_required
@@ -47,12 +71,14 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == 'like':
                 image.users_like.add(request.user)
+                create_action(request.user, 'likes', image)
             else:
                 image.users_like.remove(request.user)
             return JsonResponse({'status': 'ok'})
         except Image.DoesNotExist:
             pass
     return JsonResponse({'status': 'error'})
+
 
 @login_required
 def image_list(request):
@@ -84,3 +110,23 @@ def image_list(request):
     )
 
 
+@login_required
+def image_ranking(request):
+    # Get image ranking dictionary (top 10 image IDs by views)
+    try:
+        image_ranking = r.zrevrange('image_ranking', 0, -1)[:10]
+        image_ranking_ids = [int(id) for id in image_ranking]
+        most_viewed = list(Image.objects.filter(id__in=image_ranking_ids))
+        # Sort objects in Python to preserve the Redis ranking order
+        most_viewed.sort(key=lambda x: image_ranking_ids.index(x.id))
+    except (redis.ConnectionError, redis.TimeoutError):
+        most_viewed = []
+
+    return render(
+        request,
+        'images/image/ranking.html',
+        {
+            'section': 'images',
+            'most_viewed': most_viewed
+        }
+    )

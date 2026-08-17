@@ -32,6 +32,16 @@
                             🖼️ Images
                         </a>
                     </li>
+                    <li>
+                        <a href="{% url 'users:user_list' %}" class="nav-link {% if section == 'people' %}active{% endif %}">
+                            👥 People
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'images:ranking' %}" class="nav-link {% if request.resolver_match.url_name == 'ranking' %}active{% endif %}">
+                            🏆 Ranking
+                        </a>
+                    </li>
                 {% endif %}
             </ul>
 
