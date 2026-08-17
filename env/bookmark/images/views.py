@@ -11,11 +11,12 @@ from common.decorators import ajax_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from actions.utils import create_action
 
-# Connect to Redis
+# Connect to Redis (protocol=2 for RESP2 compatibility)
 r = redis.Redis(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
-    db=settings.REDIS_DB
+    db=settings.REDIS_DB,
+    protocol=2
 )
 
 
@@ -46,8 +47,8 @@ def image_detail(request, id, slug):
     try:
         total_views = r.incr(f'image:{image.id}:views')
         r.zincrby('image_ranking', 1, image.id)
-    except (redis.ConnectionError, redis.TimeoutError):
-        total_views = 0
+    except (redis.exceptions.RedisError, redis.ConnectionError, redis.TimeoutError):
+        total_views = None
 
     return render(
         request,
@@ -119,7 +120,7 @@ def image_ranking(request):
         most_viewed = list(Image.objects.filter(id__in=image_ranking_ids))
         # Sort objects in Python to preserve the Redis ranking order
         most_viewed.sort(key=lambda x: image_ranking_ids.index(x.id))
-    except (redis.ConnectionError, redis.TimeoutError):
+    except (redis.exceptions.RedisError, redis.ConnectionError, redis.TimeoutError):
         most_viewed = []
 
     return render(
